@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IT4B.in</title>
+    <title>IT4B.in - Interactive Services</title>
     <style>
         @keyframes gradientBG {
             0% { background-position: 0% 50%; }
@@ -72,10 +72,11 @@
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
         }
 
         .service:hover {
-            transform: translateY(-5px);
+            transform: translateY(-5px) rotate(2deg);
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         }
 
@@ -112,6 +113,36 @@
             color: white;
         }
 
+        #game-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        #game-board {
+            display: inline-block;
+            background-color: #f0f0f0;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .game-cell {
+            width: 50px;
+            height: 50px;
+            display: inline-block;
+            background-color: #fff;
+            margin: 2px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .game-cell:hover {
+            background-color: #e0e0e0;
+        }
+
+        .game-cell.active {
+            background-color: var(--accent-color);
+        }
+
         @media (max-width: 600px) {
             .container {
                 padding: 20px;
@@ -131,22 +162,40 @@
     <div class="container">
         <h2>Our Services</h2>
         <div class="services">
-            <div class="service">
+            <div class="service" onmouseover="showServiceDetails(this)" onmouseout="hideServiceDetails(this)">
                 <h3>Class 35</h3>
                 <p>Advertising and business management services to establish and grow your brand effectively.</p>
+                <div class="service-details" style="display: none;">
+                    <p>Unlock the potential of your brand with our expert advertising strategies and business management solutions.</p>
+                </div>
             </div>
-            <div class="service">
+            <div class="service" onmouseover="showServiceDetails(this)" onmouseout="hideServiceDetails(this)">
                 <h3>Class 39</h3>
                 <p>Logistics services ensuring smooth transportation and distribution for your products.</p>
+                <div class="service-details" style="display: none;">
+                    <p>Streamline your supply chain with our cutting-edge logistics and transportation services.</p>
+                </div>
             </div>
-            <div class="service">
+            <div class="service" onmouseover="showServiceDetails(this)" onmouseout="hideServiceDetails(this)">
                 <h3>Class 41</h3>
                 <p>Educational and entertainment services to engage and inform your audience.</p>
+                <div class="service-details" style="display: none;">
+                    <p>Captivate your audience with our innovative educational programs and entertaining content.</p>
+                </div>
             </div>
-            <div class="service">
+            <div class="service" onmouseover="showServiceDetails(this)" onmouseout="hideServiceDetails(this)">
                 <h3>Class 32</h3>
                 <p>Variety of non-alcoholic beverages catering to your needs and preferences.</p>
+                <div class="service-details" style="display: none;">
+                    <p>Quench your thirst with our diverse range of refreshing non-alcoholic beverages.</p>
+                </div>
             </div>
+        </div>
+
+        <h2>Interactive Game: Catch the IT4B Logo!</h2>
+        <div id="game-container">
+            <p>Click on the IT4B logo as fast as you can. Your score: <span id="score">0</span></p>
+            <div id="game-board"></div>
         </div>
 
         <h2>Learn More</h2>
@@ -162,5 +211,56 @@
     <footer>
         <p>&copy; 2024 IT4B Trademark Services. All rights reserved.</p>
     </footer>
+
+    <script>
+        function showServiceDetails(element) {
+            const details = element.querySelector('.service-details');
+            details.style.display = 'block';
+            element.style.transform = 'scale(1.05)';
+        }
+
+        function hideServiceDetails(element) {
+            const details = element.querySelector('.service-details');
+            details.style.display = 'none';
+            element.style.transform = 'scale(1)';
+        }
+
+        // Game logic
+        const gameBoard = document.getElementById('game-board');
+        const scoreElement = document.getElementById('score');
+        let score = 0;
+        let activeCell = null;
+
+        function createGameBoard() {
+            for (let i = 0; i < 16; i++) {
+                const cell = document.createElement('div');
+                cell.className = 'game-cell';
+                cell.addEventListener('click', handleCellClick);
+                gameBoard.appendChild(cell);
+            }
+        }
+
+        function setRandomActiveCell() {
+            if (activeCell) {
+                activeCell.classList.remove('active');
+            }
+            const cells = gameBoard.getElementsByClassName('game-cell');
+            const randomIndex = Math.floor(Math.random() * cells.length);
+            activeCell = cells[randomIndex];
+            activeCell.classList.add('active');
+        }
+
+        function handleCellClick(event) {
+            if (event.target === activeCell) {
+                score++;
+                scoreElement.textContent = score;
+                setRandomActiveCell();
+            }
+        }
+
+        createGameBoard();
+        setRandomActiveCell();
+        setInterval(setRandomActiveCell, 1500); // Change active cell every 1.5 seconds
+    </script>
 </body>
 </html>
