@@ -296,6 +296,83 @@
             font-size: 20px;
             animation: flicker 1.5s infinite alternate;
         }
+
+        /* Music toggle button styles */
+        .music-toggle {
+            position: fixed;
+            bottom: 80px;  /* Positioned above theme toggle */
+            right: 20px;
+            z-index: 1000;
+            padding: 10px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .music-toggle:hover {
+            transform: scale(1.1);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .music-toggle.playing {
+            background: rgba(255, 99, 71, 0.3);
+        }
+
+        /* Dark theme specific styles */
+        body.dark-theme .music-toggle {
+            background: rgba(0, 0, 0, 0.2);
+            color: white;
+        }
+
+        body.dark-theme .music-toggle.playing {
+            background: rgba(255, 99, 71, 0.5);
+        }
+
+        /* Volume slider */
+        .volume-control {
+            position: fixed;
+            bottom: 80px;
+            right: 70px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            padding: 10px;
+            border-radius: 20px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .volume-control.show {
+            display: flex;
+        }
+
+        .volume-control input[type="range"] {
+            width: 100px;
+            height: 4px;
+            -webkit-appearance: none;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 2px;
+            cursor: pointer;
+        }
+
+        .volume-control input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 15px;
+            height: 15px;
+            background: white;
+            border-radius: 50%;
+        }
     </style>
 </head>
 <body>
@@ -360,6 +437,20 @@
     </footer>
 
     <div id="diwali-decorations"></div>
+
+    <audio id="festiveMusic" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+        <!-- Replace the above URL with your actual Diwali music URL -->
+    </audio>
+
+    <button class="music-toggle" onclick="toggleMusic()" aria-label="Toggle music">
+        🎵
+    </button>
+
+    <div class="volume-control">
+        <span>🔈</span>
+        <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="0.5">
+    </div>
 
     <script>
         function showServiceDetails(element) {
@@ -586,6 +677,58 @@
                 setTimeout(() => sparkle.remove(), 2000);
             });
         }, 1000);
+
+        let isPlaying = false;
+        const music = document.getElementById('festiveMusic');
+        const musicToggle = document.querySelector('.music-toggle');
+        const volumeControl = document.querySelector('.volume-control');
+        const volumeSlider = document.getElementById('volumeSlider');
+
+        function toggleMusic() {
+            if (isPlaying) {
+                music.pause();
+                musicToggle.innerHTML = '🎵';
+                musicToggle.classList.remove('playing');
+                volumeControl.classList.remove('show');
+            } else {
+                music.play().catch(error => {
+                    console.log("Playback failed:", error);
+                });
+                musicToggle.innerHTML = '🔊';
+                musicToggle.classList.add('playing');
+                volumeControl.classList.add('show');
+            }
+            isPlaying = !isPlaying;
+        }
+
+        // Volume control
+        volumeSlider.addEventListener('input', (e) => {
+            music.volume = e.target.value;
+        });
+
+        // Hide volume control when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.music-toggle') && 
+                !e.target.closest('.volume-control') && 
+                isPlaying) {
+                volumeControl.classList.remove('show');
+            }
+        });
+
+        // Show volume control when hovering over music toggle
+        musicToggle.addEventListener('mouseenter', () => {
+            if (isPlaying) {
+                volumeControl.classList.add('show');
+            }
+        });
+
+        // Initialize music volume
+        music.volume = volumeSlider.value;
+
+        // Prevent music from playing automatically on page load
+        music.addEventListener('loadedmetadata', () => {
+            music.pause();
+        });
     </script>
 </body>
 </html>
