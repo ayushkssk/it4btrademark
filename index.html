@@ -15,8 +15,8 @@
             --primary-color: #3498db;
             --secondary-color: #2c3e50;
             --accent-color: #e74c3c;
-            --bg-gradient-light: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-            --bg-gradient-dark: linear-gradient(-45deg, #2c3e50, #2c3e50, #34495e, #2c3e50);
+            --bg-gradient-light: linear-gradient(-45deg, #ff9933, #ff4d4d, #ffcc00, #ff6600);
+            --bg-gradient-dark: linear-gradient(-45deg, #330066, #660033, #993300, #330033);
             --container-bg-light: rgba(255, 255, 255, 0.9);
             --container-bg-dark: rgba(33, 33, 33, 0.9);
             --text-color-light: #2c3e50;
@@ -56,6 +56,14 @@
             background-color: var(--container-bg-light);
             border-radius: 15px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .container::before {
+            content: '✨';
+            position: absolute;
+            font-size: 20px;
+            animation: twinkle 1.5s infinite alternate;
         }
 
         h2 {
@@ -79,6 +87,8 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             cursor: pointer;
+            position: relative;
+            overflow: visible !important;
         }
 
         .service:hover {
@@ -234,6 +244,58 @@
                 height: 35px;
             }
         }
+
+        /* Updated Diwali Theme Decorations */
+        .diya {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: radial-gradient(circle at 50% 50%, #ffd700, #ff8c00);
+            border-radius: 50%;
+            box-shadow: 0 0 20px #ffd700;
+            animation: flicker 1s infinite alternate;
+            z-index: 999;
+        }
+
+        .diya::after {
+            content: '🪔';
+            position: absolute;
+            font-size: 24px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Sparkle animations */
+        .sparkle {
+            position: absolute;
+            font-size: 16px;
+            color: #ffd700;
+            animation: twinkle 2s infinite alternate;
+            z-index: 2;
+        }
+
+        @keyframes twinkle {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.5;
+                transform: scale(0.8);
+            }
+        }
+
+        /* Service card decorations */
+        .service::before {
+            content: '🪔';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 20px;
+            animation: flicker 1.5s infinite alternate;
+        }
     </style>
 </head>
 <body>
@@ -296,6 +358,8 @@
     <footer>
         <p>&copy; 2024 IT4B.in. All rights reserved.</p>
     </footer>
+
+    <div id="diwali-decorations"></div>
 
     <script>
         function showServiceDetails(element) {
@@ -373,6 +437,155 @@
                 themeButton.innerHTML = '🌙';
             }
         });
+
+        function createDiwaliDecorations() {
+            const container = document.getElementById('diwali-decorations');
+            
+            // Create Diyas
+            const diyaPositions = [
+                { left: '10px', top: '10px' },
+                { right: '10px', top: '10px' },
+                { left: '10px', bottom: '10px' },
+                { right: '10px', bottom: '10px' }
+            ];
+
+            diyaPositions.forEach(pos => {
+                const diya = document.createElement('div');
+                diya.className = 'diya';
+                Object.assign(diya.style, pos);
+                container.appendChild(diya);
+            });
+
+            // Create Firecrackers
+            setInterval(createFirecracker, 2000);
+        }
+
+        function createFirecracker() {
+            const firecracker = document.createElement('div');
+            firecracker.className = 'firecracker';
+            
+            // Random position from bottom
+            const startX = Math.random() * window.innerWidth;
+            firecracker.style.left = `${startX}px`;
+            firecracker.style.bottom = '0';
+            
+            // Random color
+            const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            firecracker.style.backgroundColor = color;
+            firecracker.style.boxShadow = `0 0 10px ${color}`;
+            
+            // Add shooting animation
+            firecracker.style.animation = 'shoot 1s ease-out forwards';
+            
+            document.getElementById('diwali-decorations').appendChild(firecracker);
+            
+            // Remove after animation
+            setTimeout(() => {
+                createExplosion(startX, 100);
+                firecracker.remove();
+            }, 1000);
+        }
+
+        function createExplosion(x, y) {
+            const explosion = document.createElement('div');
+            explosion.className = 'firecracker';
+            explosion.style.left = `${x}px`;
+            explosion.style.top = `${y}px`;
+            
+            const colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff'];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            explosion.style.backgroundColor = color;
+            explosion.style.boxShadow = `0 0 20px ${color}`;
+            
+            explosion.style.animation = 'explode 0.5s ease-out forwards';
+            
+            document.getElementById('diwali-decorations').appendChild(explosion);
+            
+            setTimeout(() => explosion.remove(), 500);
+        }
+
+        // Initialize Diwali decorations
+        document.addEventListener('DOMContentLoaded', createDiwaliDecorations);
+
+        function addSparkles() {
+            const containers = document.querySelectorAll('.container');
+            
+            containers.forEach(container => {
+                // Add multiple sparkles to each container
+                for (let i = 0; i < 10; i++) {
+                    const sparkle = document.createElement('span');
+                    sparkle.className = 'sparkle';
+                    sparkle.textContent = '✨';
+                    
+                    // Random position within container
+                    const left = Math.random() * 100;
+                    const top = Math.random() * 100;
+                    
+                    sparkle.style.left = `${left}%`;
+                    sparkle.style.top = `${top}%`;
+                    
+                    // Random animation delay
+                    sparkle.style.animationDelay = `${Math.random() * 2}s`;
+                    
+                    container.appendChild(sparkle);
+                }
+            });
+        }
+
+        function addDiyas() {
+            const containers = document.querySelectorAll('.container');
+            
+            containers.forEach(container => {
+                // Add diyas at strategic positions
+                const positions = [
+                    { top: '10px', left: '10px' },
+                    { top: '10px', right: '10px' },
+                    { bottom: '10px', left: '10px' },
+                    { bottom: '10px', right: '10px' }
+                ];
+                
+                positions.forEach(pos => {
+                    const diya = document.createElement('div');
+                    diya.className = 'diya';
+                    Object.assign(diya.style, pos);
+                    container.appendChild(diya);
+                });
+            });
+        }
+
+        // Initialize decorations
+        document.addEventListener('DOMContentLoaded', () => {
+            addSparkles();
+            addDiyas();
+            
+            // Add sparkles to service cards
+            const services = document.querySelectorAll('.service');
+            services.forEach(service => {
+                const sparkle = document.createElement('span');
+                sparkle.className = 'sparkle';
+                sparkle.textContent = '✨';
+                sparkle.style.top = '-10px';
+                sparkle.style.right = '-10px';
+                service.appendChild(sparkle);
+            });
+        });
+
+        // Periodically add new sparkles for dynamic effect
+        setInterval(() => {
+            const containers = document.querySelectorAll('.container');
+            containers.forEach(container => {
+                const sparkle = document.createElement('span');
+                sparkle.className = 'sparkle';
+                sparkle.textContent = '✨';
+                sparkle.style.left = `${Math.random() * 100}%`;
+                sparkle.style.top = `${Math.random() * 100}%`;
+                container.appendChild(sparkle);
+                
+                // Remove sparkle after animation
+                setTimeout(() => sparkle.remove(), 2000);
+            });
+        }, 1000);
     </script>
 </body>
 </html>
